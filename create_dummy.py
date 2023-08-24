@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import openpyxl
 
 from faker import Faker
 from tabulate import tabulate
@@ -48,6 +49,41 @@ def list_to_csv(data_list: list, folder_path: str, filename: str, headers: list)
         # Write data
         for row in data_list:
             writer.writerow(row)
+
+
+def xlsx_to_dict(file_path, sheet_name):
+    """
+    Convert an XLSX file to a dictionary using openpyxl.
+
+    Args:
+        file_path (str): Path to the XLSX file.
+        sheet_name (str): Name of the sheet in the XLSX file.
+
+    Returns:
+        dict: A dictionary containing the data from the specified sheet.
+    """
+    data_dict = {}
+
+    # Load the workbook
+    workbook = openpyxl.load_workbook(file_path)
+
+    try:
+        # Get the specified sheet
+        sheet = workbook[sheet_name]
+
+        # Iterate through rows, excluding the header row
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            kota_id, nama_kota, latitude, longitude = row
+            kota_id = int(kota_id)
+            data_dict[kota_id] = {
+                "nama_kota": nama_kota,
+                "latitude": latitude,
+                "longitude": longitude,
+            }
+    except KeyError:
+        print(f"Sheet '{sheet_name}' not found in the workbook.")
+
+    return data_dict
 
 
 # Function to generate body types with optional printing
@@ -288,3 +324,33 @@ def generate_cars(
         show_table(dummy_data, header)
 
     return dummy_data
+
+
+def generate_locations(data: dict, is_printed: bool = True) -> list:
+    """
+    Generate a list of location data from a dictionary.
+
+    Args:
+        data (dict): A dictionary containing location data.
+        is_printed (bool, optional): Whether to print the generated data.
+                                     Defaults to True.
+
+    Returns:
+        list: A list of tuples containing location data.
+              Each tuple has the format: (
+                  location_id,
+                  city_name,
+                  (latitude, longitude)
+                ).
+    """
+    location_list = []
+
+    for id, lokasi in data.items():
+        location_list.append(
+            (id, lokasi["nama_kota"], (lokasi["latitude"], lokasi["longitude"]))
+        )
+
+    if is_printed:
+        show_table(location_list, ["location_id", "city_name", "location"])
+
+    return location_list
