@@ -1,10 +1,11 @@
 from create_dummy import (
-    show_table,
     list_to_csv,
+    xlsx_to_dict,
     generate_body_types,
     generate_manufactures,
     generate_car_models,
     generate_cars,
+    generate_locations,
 )
 
 car_data = {
@@ -338,6 +339,13 @@ cars_data = generate_cars(
     car_data, manufactures_data, body_type_data, car_models_data, n_data=100
 )
 
+# Load data from XLSX file and generate location data
+xlsx_file_path = "city.xlsx"
+sheet_name = "city"
+location_data = generate_locations(
+    data=xlsx_to_dict(xlsx_file_path, sheet_name=sheet_name)
+)
+
 # Define headers for CSV files
 manufactures_headers = ["manufacture_id", "manufacture_name"]
 car_models_headers = ["manufacture_id", "model_name"]
@@ -355,9 +363,11 @@ cars_header = [
     "odometer",
     "additional_details",
 ]
+location_headers = ["location_id", "city_name", "location"]
 
 # Export data to CSV files in the "outputs" folder
 list_to_csv(manufactures_data, "outputs", "manufactures.csv", manufactures_headers)
 list_to_csv(car_models_data, "outputs", "car_models.csv", car_models_headers)
 list_to_csv(body_type_data, "outputs", "body_types.csv", body_types_headers)
 list_to_csv(cars_data, "outputs", "cars.csv", cars_header)
+list_to_csv(location_data, "outputs", "locations.csv", location_headers)
