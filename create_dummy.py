@@ -180,10 +180,10 @@ def generate_car_models(
 
             car_models.append((car_model_id, manufacture_id, model))
 
-    sorted_car_models = sorted(car_models, key=lambda x: x[0])
+    sorted_car_models = sorted(car_models, key=lambda x: x[0])  # Sort car models by ID
 
     if is_printed:
-        show_table(sorted_car_models, ["car_model_id", "manufacture_id", "model_name"])
+        show_table(sorted_car_models, ["model_id", "manufacture_id", "model_name"])
 
     return sorted_car_models
 
