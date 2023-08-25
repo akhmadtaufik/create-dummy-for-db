@@ -277,19 +277,19 @@ car_data = {
             "pabrikan": "Tesla",
             "tahun": [2020, 2021, 2022],
             "harga": [975_000_000, 1_075_000_000, 1_650_000_000],
-            "kapasitas_mesin": None,
+            "kapasitas_mesin": 0,
         },
         "Hyundai IONIQ 5": {
             "pabrikan": "Hyundai",
             "tahun": [2021, 2022, 2023],
             "harga": [679_000_000, 775_000_000, 825_000_000],
-            "kapasitas_mesin": None,
+            "kapasitas_mesin": 0,
         },
         "Wuling Air EV": {
             "pabrikan": "Wuling",
             "tahun": [2021, 2022, 2023],
             "harga": [230_000_000, 245_000_000, 300_000_000],
-            "kapasitas_mesin": None,
+            "kapasitas_mesin": 0,
         },
     },
     "Hybrid": {
@@ -381,7 +381,7 @@ bid_data = generate_bids(
 
 # Define headers for CSV files
 manufactures_headers = ["manufacture_id", "manufacture_name"]
-car_models_headers = ["manufacture_id", "model_name"]
+car_models_headers = ["model_id", "manufacture_id", "model_name"]
 body_types_headers = ["body_type_id", "body_type_name"]
 cars_header = [
     "car_id",
