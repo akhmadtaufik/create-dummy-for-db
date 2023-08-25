@@ -6,6 +6,9 @@ from create_dummy import (
     generate_car_models,
     generate_cars,
     generate_locations,
+    generate_customer,
+    generate_advertisement,
+    generate_bids,
 )
 
 car_data = {
@@ -326,24 +329,54 @@ car_data = {
 }
 
 # Call the function and store the result
-body_type_data = generate_body_types(car_data, is_printed=False)
+body_type_data = generate_body_types(data=car_data, is_printed=False)
 
 # Generate manufacturers data
-manufactures_data = generate_manufactures(car_data, is_printed=False)
+manufactures_data = generate_manufactures(data=car_data, is_printed=False)
 
 # Generate and sort car models data
-car_models_data = generate_car_models(car_data, manufactures_data, is_printed=False)
+car_models_data = generate_car_models(
+    data=car_data, manufactures_table=manufactures_data, is_printed=False
+)
 
-# Generate 100 cars data
-cars_data = generate_cars(
-    car_data, manufactures_data, body_type_data, car_models_data, n_data=100
+# Generate cars data
+cars_table_data = generate_cars(
+    data=car_data,
+    manufactures_table=manufactures_data,
+    body_types_table=body_type_data,
+    car_models_table=car_models_data,
+    n_data=200,
+    is_printed=False,
 )
 
 # Load data from XLSX file and generate location data
 xlsx_file_path = "city.xlsx"
 sheet_name = "city"
 location_data = generate_locations(
-    data=xlsx_to_dict(xlsx_file_path, sheet_name=sheet_name)
+    data=xlsx_to_dict(xlsx_file_path, sheet_name=sheet_name), is_printed=False
+)
+
+# Generate customer data
+customer_data = generate_customer(
+    location_table=location_data, n_data=400, is_printed=False
+)
+
+# generate_advertisement function with the required parameters
+advertisement_data = generate_advertisement(
+    data=car_data,
+    customer_table=customer_data,
+    cars_table=cars_table_data,
+    car_models_table=car_models_data,
+    n_data=500,
+    is_printed=False,
+)
+
+# Call the generate_bids function with the required parameters
+bid_data = generate_bids(
+    advertisement_table=advertisement_data,
+    customer_table=customer_data,
+    n_data=1000,
+    is_printed=False,
 )
 
 # Define headers for CSV files
@@ -351,6 +384,7 @@ manufactures_headers = ["manufacture_id", "manufacture_name"]
 car_models_headers = ["manufacture_id", "model_name"]
 body_types_headers = ["body_type_id", "body_type_name"]
 cars_header = [
+    "car_id",
     "manufacture_id",
     "model_id",
     "body_type_id",
@@ -364,10 +398,32 @@ cars_header = [
     "additional_details",
 ]
 location_headers = ["location_id", "city_name", "location"]
+customer_headers = [
+    "user_id",
+    "first_name",
+    "last_name",
+    "email",
+    "contact",
+    "location_id",
+]
+advertisement_headers = [
+    "ad_id",
+    "user_id",
+    "title",
+    "price",
+    "description",
+    "car_id",
+    "date_posted",
+]
+bid_headers = ["ad_id", "user_id", "bid_price", "bid_status", "datetime_bid"]
+
 
 # Export data to CSV files in the "outputs" folder
 list_to_csv(manufactures_data, "outputs", "manufactures.csv", manufactures_headers)
 list_to_csv(car_models_data, "outputs", "car_models.csv", car_models_headers)
 list_to_csv(body_type_data, "outputs", "body_types.csv", body_types_headers)
-list_to_csv(cars_data, "outputs", "cars.csv", cars_header)
+list_to_csv(cars_table_data, "outputs", "cars.csv", cars_header)
 list_to_csv(location_data, "outputs", "locations.csv", location_headers)
+list_to_csv(customer_data, "outputs", "user.csv", customer_headers)
+list_to_csv(advertisement_data, "outputs", "ads.csv", advertisement_headers)
+list_to_csv(bid_data, "outputs", "bid.csv", bid_headers)
